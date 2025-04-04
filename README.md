@@ -17,3 +17,22 @@ March 27, 2025 – June 24, 2025
 - [README.md](README.md): This file
 
 > The contents will be updated as the project progresses.
+
+## Environment Setup
+
+This project uses Python 3.12.0.  
+It is recommended to create a virtual environment (`venv`) before installing the required packages.
+
+### Create a virtual environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # For Mac/Linux
+venv\Scripts\activate     # For Windows
+```
+
+### Install required packages
+The required packages are listed in requirements.txt.
+```
+pip install -r requirements.txt
+```
