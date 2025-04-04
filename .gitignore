@@ -98,5 +98,8 @@
 *.fdb_latexmk
 *.pdfsync
 
+# Ignore temporary PowerPoint files
+~$*.pptx
+
 # Python virtual environment
 /venv
