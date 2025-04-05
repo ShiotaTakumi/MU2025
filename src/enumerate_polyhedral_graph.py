@@ -30,6 +30,11 @@ class BaseGraph:
         # Set the universe of edges for Graphillion
         GraphSet.set_universe(self.edges)
 
+        # 初期状態ではすべての部分グラフを保持する
+        # Initialize with all subgraphs (full universe)
+        self.base_graph = self
+        self.graphs = GraphSet.universe()
+
     def print_universe(self):
         # エッジ集合を出力する
         # Print the universe of edges
@@ -43,15 +48,15 @@ class DegreeConstraint:
     次数制約を満たすグラフを列挙するクラス
     A class to enumerate graphs satisfying the degree constraints.
     """
-
-    def __init__(self, base_graph):
-        # 元となる完全グラフの情報を受け取る
-        # Receive the complete graph information from a BaseGraph instance
-        self.base_graph = base_graph
+    def __init__(self, prev):
+        # 前段のグラフ情報を受け取る
+        # Receive the graph information from the previous class
+        self.base_graph = prev.base_graph
+        self.graphs = prev.graphs
 
         # 各頂点の次数を 3 以上 (最大 n-1) に制限する制約を定義する
         # Define degree constraints to restrict each vertex to degree 3 or higher (up to n-1)
-        self.degree_constraints = {v: range(3, base_graph.n) for v in base_graph.vertices}
+        self.degree_constraints = {v: range(3, self.base_graph.n) for v in self.base_graph.vertices}
 
         # 次数制約を満たすグラフを列挙する
         # Enumerate graphs satisfying the degree constraints
@@ -77,11 +82,11 @@ class ConnectedConstraint:
     連結制約を満たすグラフを抽出するクラス
     A class to filter graphs satisfying the connected constraint.
     """
-
-    def __init__(self, deg_const_graph):
-        # DegreeConstraint クラスのインスタンスからグラフ集合を受け取る
-        # Receive the graph set from a DegreeConstraint instance
-        self.base_graph = deg_const_graph.base_graph
+    def __init__(self, prev):
+        # 前段のグラフ情報を受け取る
+        # Receive the graph information from the previous class
+        self.base_graph = prev.base_graph
+        self.graphs = prev.graphs
 
         # 頂点集合を取得する
         # Get the set of vertices
@@ -89,7 +94,7 @@ class ConnectedConstraint:
 
         # 連結なグラフだけを抽出する
         # Filter graphs that are connected
-        self.graphs = deg_const_graph.graphs.including(GraphSet.connected_components(vertices))
+        self.graphs = self.graphs.including(GraphSet.connected_components(vertices))
 
     def output_graphs(self):
         # 連結制約を満たすグラフの結果を出力する（デバッグ用）
@@ -117,38 +122,31 @@ def main():
         print("Number of vertices must be at least 4 for degree >= 3 constraint.")
         return
 
-    # BaseGraph クラスを用いて元グラフを作成する
-    # Use the BaseGraph class to construct the base graph
+    # 元グラフを作成
+    # Create the base graph
     base_graph = BaseGraph(n)
 
     # 必要ならエッジ集合を出力する（デバッグ用）
     # Print the universe of edges (for debugging)
     # base_graph.print_universe()
 
-    # DegreeConstraint クラスを用いて次数制約を満たすグラフを列挙する
-    # Use the DegreeConstraint class to enumerate graphs satisfying the degree constraints
-    deg_const_graph = DegreeConstraint(base_graph)
+    # 制約を順に適用
+    # Apply constraints sequentially
+    constrained_graph = base_graph
 
-    # 次数制約を満たすグラフの結果を出力する（デバッグ用）
-    # Output the graphs satisfying the degree constraints (for debugging)
-    # deg_const_graph.output_graphs()
+    # 次数制約を適用
+    # Apply the degree constraint
+    constrained_graph = DegreeConstraint(constrained_graph)
+    print(f"Number of graphs after degree constraint: {len(constrained_graph.graphs)}")
 
-    # 次数制約を満たすグラフの個数を出力する（デバッグ用）
-    # Output the number of graphs satisfying the degree constraints (for debugging)
-    print(len(deg_const_graph.graphs))
+    # 連結制約を適用
+    # Apply the connectivity constraint
+    constrained_graph = ConnectedConstraint(constrained_graph)
+    print(f"Number of graphs after connected constraint: {len(constrained_graph.graphs)}")
 
-    # ConnectedConstraint クラスを用いて連結制約を満たすグラフを抽出する
-    # Use the ConnectedConstraint class to filter graphs satisfying the connected constraint
-    connected_graph = ConnectedConstraint(deg_const_graph)
-
-    # 連結制約を満たすグラフの結果を出力する（デバッグ用）
-    # Output the graphs satisfying the connected constraint (for debugging)
-    # connected_graph.output_graphs()
-
-    # 連結制約を満たすグラフの個数を出力する（デバッグ用）
-    # Output the number of graphs satisfying the connected constraint (for debugging)
-    print(len(connected_graph.graphs))
-
+    # グラフを出力する（デバッグ用）
+    # Output the graphs (for debugging)
+    # constrained_graph.output_graphs()
 
 ####################
 if __name__ == "__main__":
