@@ -37,7 +37,6 @@
 *.out
 *.app
 *.dot
-*.png
 
 # Ignore temporary program files
 *.tmp
