@@ -2,6 +2,8 @@
 
 from graphillion import GraphSet
 import networkx as nx
+import os
+import matplotlib.pyplot as plt
 
 
 class BaseGraph:
@@ -212,6 +214,46 @@ class PolyhedralRemoval:
             print(graph.edges())
 
 
+class GraphDrawer:
+    """
+    グラフを描画してファイルに保存するクラス
+    A class to draw graphs and save them as files.
+    """
+    def __init__(self, prev, n, output_dir="polyhedral_graphs"):
+        # 前段のグラフ情報を受け取る
+        # Receive the graph information from the previous class
+        self.graphs = prev.graphs
+        self.n = n
+        self.output_dir = output_dir
+
+        # 出力先ディレクトリを作成する
+        # Create the output directory if it doesn't exist
+        self.save_path = os.path.join(output_dir, f"n{n}")
+        os.makedirs(self.save_path, exist_ok=True)
+
+    def draw_and_save(self):
+        # グラフを描画して保存する
+        # Draw each graph and save it as a PNG file
+        for idx, G in enumerate(self.graphs):
+            plt.figure(figsize=(4, 4))
+
+            # 平面レイアウトを使って交差しないように配置
+            # Use planar layout to avoid crossings
+            pos = nx.planar_layout(G)
+
+            # グラフを描画する
+            # Draw the graph
+            nx.draw(G, pos, with_labels=True, node_size=300)
+
+            # ファイルに保存する（dpi=600 に設定）
+            # Save the drawing to a file (dpi=600)
+            filename = os.path.join(self.save_path, f"graph_{idx}.png")
+            plt.savefig(filename, dpi=600)
+            plt.close()
+
+            print(f"Saved {filename}")
+
+
 def main():
     # 頂点数をユーザー入力で受け取る
     # Get the number of vertices from user input
@@ -262,7 +304,12 @@ def main():
 
     # グラフを出力する（デバッグ用）
     # Output the graphs (for debugging)
-    # constrained_graph.output_graphs()
+    constrained_graph.output_graphs()
+
+    # グラフを描画して保存する
+    # Draw and save the graphs
+    drawer = GraphDrawer(constrained_graph, n)
+    drawer.draw_and_save()
 
 ####################
 if __name__ == "__main__":
