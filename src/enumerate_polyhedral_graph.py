@@ -156,6 +156,31 @@ class IsomorphismRemoval:
             print(graph.edges())
 
 
+class PlanarityRemoval:
+    """
+    平面でないグラフを取り除くクラス
+    A class to remove non-planar graphs.
+    """
+    def __init__(self, prev):
+        # 前段のグラフ情報を受け取る
+        # Receive the graph information from the previous class
+        self.base_graph = prev.base_graph
+        self.graphs = []
+
+        # もともとのグラフリストを取得
+        # Get the original list of graphs
+        original_graphs = prev.unique_graphs
+
+        for G in original_graphs:
+            # すでに networkx.Graph 型なのでそのまま平面性をチェック
+            # Check planarity directly (already networkx.Graph)
+            is_planar, _ = nx.check_planarity(G)
+            if is_planar:
+                # planar なものだけ保存
+                # Save only planar graphs
+                self.graphs.append(G)
+
+
 def main():
     # 頂点数をユーザー入力で受け取る
     # Get the number of vertices from user input
@@ -193,6 +218,11 @@ def main():
     # Remove isomorphic graphs
     constrained_graph = IsomorphismRemoval(constrained_graph)
     print(f"Number of non-isomorphic graphs: {len(constrained_graph.unique_graphs)}")
+
+    # 平面グラフでないものを取り除く
+    # Remove non-planar graphs
+    constrained_graph = PlanarityRemoval(constrained_graph)
+    print(f"Number of planar graphs: {len(constrained_graph.graphs)}")
 
     # グラフを出力する（デバッグ用）
     # Output the graphs (for debugging)
