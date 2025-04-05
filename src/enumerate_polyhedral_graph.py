@@ -181,6 +181,37 @@ class PlanarityRemoval:
                 self.graphs.append(G)
 
 
+class PolyhedralRemoval:
+    """
+    3-連結でないグラフを取り除くクラス
+    A class to remove graphs that are not 3-connected.
+    """
+    def __init__(self, prev):
+        # 前段のグラフ情報を受け取る
+        # Receive the graph information from the previous class
+        self.base_graph = prev.base_graph
+        self.graphs = []
+
+        # もともとのグラフリストを取得
+        # Get the original list of graphs
+        original_graphs = prev.graphs
+
+        for G in original_graphs:
+            # 3-連結性をチェックする
+            # Check if the graph is 3-connected
+            if nx.node_connectivity(G) >= 3:
+                # 3-連結なものだけ保存
+                # Save only 3-connected graphs
+                self.graphs.append(G)
+
+    def output_graphs(self):
+        # 3-連結なグラフを出力する（デバッグ用）
+        # Output the 3-connected graphs (for debugging)
+        print("3-connected graphs:")
+        for graph in self.graphs:
+            print(graph.edges())
+
+
 def main():
     # 頂点数をユーザー入力で受け取る
     # Get the number of vertices from user input
@@ -223,6 +254,11 @@ def main():
     # Remove non-planar graphs
     constrained_graph = PlanarityRemoval(constrained_graph)
     print(f"Number of planar graphs: {len(constrained_graph.graphs)}")
+
+    # 3-連結でないものを取り除く
+    # Remove graphs that are not 3-connected
+    constrained_graph = PolyhedralRemoval(constrained_graph)
+    print(f"Number of 3-connected graphs: {len(constrained_graph.graphs)}")
 
     # グラフを出力する（デバッグ用）
     # Output the graphs (for debugging)
