@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from graphillion import GraphSet
+import networkx as nx
 
 
 class BaseGraph:
@@ -111,6 +112,50 @@ class ConnectedConstraint:
             print(translated_graph)
 
 
+class IsomorphismRemoval:
+    """
+    同型なものを取り除くクラス
+    A class to remove isomorphic graphs.
+    """
+    def __init__(self, prev):
+        # 前段のグラフ情報を受け取る
+        # Receive the graph information from the previous class
+        self.base_graph = prev.base_graph
+        self.graphs = prev.graphs
+
+        # 同型性除去後のグラフリストを格納
+        # Store unique graphs after isomorphism filtering
+        self.unique_graphs = []
+
+        # すべてのグラフに対して同型判定を行う
+        # Check all graphs for isomorphism
+        for edge_list in self.graphs:
+            # networkx のグラフオブジェクトを作成
+            # Create a networkx Graph object
+            G = nx.Graph()
+            G.add_edges_from(edge_list)
+
+            # 既存の unique_graphs に含まれるグラフと同型かどうかをチェック
+            # Check if G is isomorphic to any graph already in unique_graphs
+            is_new = True
+            for H in self.unique_graphs:
+                if nx.is_isomorphic(G, H):
+                    is_new = False
+                    break
+
+            # 同型でなければ追加
+            # If not isomorphic to any existing graph, add G to unique_graphs
+            if is_new:
+                self.unique_graphs.append(G)
+
+    def output_graphs(self):
+        # 同型性除去後のグラフを出力する（デバッグ用）
+        # Output the graphs after isomorphism removal (for debugging)
+        print("Non-isomorphic graphs:")
+        for graph in self.unique_graphs:
+            print(graph.edges())
+
+
 def main():
     # 頂点数をユーザー入力で受け取る
     # Get the number of vertices from user input
@@ -143,6 +188,11 @@ def main():
     # Apply the connectivity constraint
     constrained_graph = ConnectedConstraint(constrained_graph)
     print(f"Number of graphs after connected constraint: {len(constrained_graph.graphs)}")
+
+    # 同型なものを取り除く
+    # Remove isomorphic graphs
+    constrained_graph = IsomorphismRemoval(constrained_graph)
+    print(f"Number of non-isomorphic graphs: {len(constrained_graph.unique_graphs)}")
 
     # グラフを出力する（デバッグ用）
     # Output the graphs (for debugging)
