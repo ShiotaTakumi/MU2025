@@ -55,6 +55,7 @@
 
 # Ignore generated graph data
 *.g6
+*.g6.xz
 
 # Ignore files and directories of package management systems
 *.war
