@@ -53,6 +53,9 @@
 *.so
 *.dylib
 
+# Ignore generated graph data
+*.g6
+
 # Ignore files and directories of package management systems
 *.war
 *.ear
