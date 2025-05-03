@@ -1,6 +1,0 @@
-[submodule "lib/TdZdd"]
-	path = lib/TdZdd
-	url = git@github.com:kunisura/TdZdd.git
-[submodule "lib/frontier_basic_tdzdd"]
-	path = lib/frontier_basic_tdzdd
-	url = git@github.com:junkawahara/frontier_basic_tdzdd.git
