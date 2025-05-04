@@ -297,10 +297,10 @@ def main():
     constrained_graph = PlanarityRemoval(constrained_graph)
     print(f"Number of planar graphs: {len(constrained_graph.graphs)}")
 
-    # # 3-連結でないものを取り除く
-    # # Remove graphs that are not 3-connected
-    # constrained_graph = PolyhedralRemoval(constrained_graph)
-    # print(f"Number of 3-connected graphs: {len(constrained_graph.graphs)}")
+    # 3-連結でないものを取り除く
+    # Remove graphs that are not 3-connected
+    constrained_graph = PolyhedralRemoval(constrained_graph)
+    print(f"Number of 3-connected graphs: {len(constrained_graph.graphs)}")
 
     # # グラフを出力する（デバッグ用）
     # # Output the graphs (for debugging)
