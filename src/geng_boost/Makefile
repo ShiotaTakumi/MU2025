@@ -1,9 +1,9 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -O2 -I/opt/homebrew/include
-LDFLAGS = -L/opt/homebrew/lib -lboost_system
+LDFLAGS = -L/opt/homebrew/lib
 
-TARGET = a.out
-SRC = main.cpp
+TARGET = planar
+SRC = planar.cpp
 
 all: $(TARGET)
 

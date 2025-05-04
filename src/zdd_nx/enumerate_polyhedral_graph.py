@@ -297,19 +297,19 @@ def main():
     constrained_graph = PlanarityRemoval(constrained_graph)
     print(f"Number of planar graphs: {len(constrained_graph.graphs)}")
 
-    # 3-連結でないものを取り除く
-    # Remove graphs that are not 3-connected
-    constrained_graph = PolyhedralRemoval(constrained_graph)
-    print(f"Number of 3-connected graphs: {len(constrained_graph.graphs)}")
+    # # 3-連結でないものを取り除く
+    # # Remove graphs that are not 3-connected
+    # constrained_graph = PolyhedralRemoval(constrained_graph)
+    # print(f"Number of 3-connected graphs: {len(constrained_graph.graphs)}")
 
-    # グラフを出力する（デバッグ用）
-    # Output the graphs (for debugging)
-    constrained_graph.output_graphs()
+    # # グラフを出力する（デバッグ用）
+    # # Output the graphs (for debugging)
+    # constrained_graph.output_graphs()
 
-    # グラフを描画して保存する
-    # Draw and save the graphs
-    drawer = GraphDrawer(constrained_graph, n)
-    drawer.draw_and_save()
+    # # グラフを描画して保存する
+    # # Draw and save the graphs
+    # drawer = GraphDrawer(constrained_graph, n)
+    # drawer.draw_and_save()
 
 ####################
 if __name__ == "__main__":
