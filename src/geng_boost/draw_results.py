@@ -74,7 +74,7 @@ for page in range(num_pages):
     if num_pages == 1:
         plt.savefig(output_path, dpi=600, bbox_inches='tight')
     else:
-        page_path = f"draw/n{n}_page{page + 1}.pdf"
+        page_path = f"drawing/n{n}_page{page + 1}.pdf"
         plt.savefig(page_path, dpi=600, bbox_inches='tight')
 
     plt.close()  # メモリ解放 / Release memory
