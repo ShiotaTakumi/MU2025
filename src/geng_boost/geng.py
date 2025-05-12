@@ -10,7 +10,7 @@ import os           # ディレクトリ操作に使用 / For directory handling
 opt_str = input("Enter geng options (e.g., -c -d3): ")
 geng_options = shlex.split(opt_str)  # 空白で区切ってリストに変換 / Split options string into list
 
-# オプションを逆順ソートして連結（例: ['-c', '-d3'] → 'cd3'）
+# オプションを逆順ソートして連結（例: ['-c', '-d3'] → 'd3c'）
 # Sort and concatenate option flags in reverse order (e.g., ['-c', '-d3'] → 'd3c')
 base_dir = ''.join(sorted((opt.replace('-', '') for opt in geng_options), reverse=True))
 
