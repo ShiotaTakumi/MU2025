@@ -10,12 +10,27 @@ import os           # ディレクトリ操作に使用 / For directory handling
 opt_str = input("Enter geng options (e.g., -c -d3): ")
 geng_options = shlex.split(opt_str)  # 空白で区切ってリストに変換 / Split options string into list
 
-# オプションを逆順ソートして連結（例: ['-c', '-d3'] → 'd3c'）
-# Sort and concatenate option flags in reverse order (e.g., ['-c', '-d3'] → 'd3c')
-base_dir = ''.join(sorted((opt.replace('-', '') for opt in geng_options), reverse=True))
+# オプションを変換：大文字なら x を付けて小文字化（例: -F → xf
+# Convert options: uppercase becomes 'x' + lowercase (e.g., -F → xf)
+converted_opts = []
+for opt in geng_options:
+    if opt.startswith('-'):
+        opt_body = opt[1:]  # '-' を除去 / Remove leading '-'
+        new_opt = ''
+        for ch in opt_body:
+            if ch.isupper():
+                new_opt += 'x' + ch.lower()  # 大文字 → 'x' + 小文字 / Uppercase → 'x' + lowercase
+            else:
+                new_opt += ch  # 小文字はそのまま / Keep lowercase as is
+        converted_opts.append(new_opt)
+    else:
+        converted_opts.append(opt)  # '-' で始まらない文字列はそのまま / Keep unprefixed items as is
 
-# ベースディレクトリを構築
-# Construct base output directory
+# 変換後オプションを逆順にソートし、連結（例: ['c', 'd3', 'xf'] → 'xfd3c'）
+# Sort reversed and concatenate (e.g., ['c', 'd3', 'xf'] → 'xfd3c')
+base_dir = ''.join(sorted(converted_opts, reverse=True))
+
+# 出力用ディレクトリを作成 / Create output directory
 os.makedirs(base_dir, exist_ok=True)
 
 # ループ処理か単体処理かを選択
