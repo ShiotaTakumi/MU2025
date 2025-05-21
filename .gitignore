@@ -1,9 +1,6 @@
 # Ignore .DS_Store files on Mac OS X
 .DS_Store
 
-# For VSCode
-*.json
-
 # Prerequisites
 *.d
 
