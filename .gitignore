@@ -53,16 +53,13 @@
 *.so
 *.dylib
 
-# Ignore generated graph data
-*.g6
-*.g6.xz
-
 # Ignore files and directories of package management systems
 *.war
 *.ear
 *.zip
 *.tar.gz
 *.rar
+*.xz
 
 # Ignore log files and binaries
 *.log
