@@ -51,18 +51,23 @@ fetch('json/sample.json')
           }
         },
         {
-          // 通常の辺のスタイル / Default edge styling
+          // 通常の辺のスタイル
+          // Default edge styling
           selector: 'edge',
           style: {
-            'width': 1,
+            'width': 1.5,
             'line-color': '#000'         // 線の色（黒）/ Line color (black)
           }
         },
         {
-          // 強調表示された辺のスタイル / Highlighted edge styling
+          // 強調表示された辺のスタイル
+          // Highlighted edge styling
           selector: 'edge[highlighted = "true"]',
           style: {
-            'line-color': '#f00'         // 線の色（赤）/ Line color (red)
+            'width': 1.3,
+            'line-color': '#303030',     // 線の色（灰色）/ Line color (gray)
+            'line-style': 'dashed',      // 点線に変更 / Make it dashed
+            'line-dash-pattern': [6, 3]  // 点線の長さと間隔 / [dash length, gap]
           }
         }
       ]
