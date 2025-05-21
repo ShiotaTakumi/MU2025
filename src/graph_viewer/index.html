@@ -5,15 +5,37 @@
   <title>Graph Viewer</title>
   <script src="https://unpkg.com/cytoscape@3.23.0/dist/cytoscape.min.js"></script>
   <style>
+    /* グラフ描画領域のスタイル / Graph container style */
     #cy {
       width: 100%;
       height: 90vh;
       border: 1px solid #000000;
     }
+
+    /* ボタンのスタイル / Button style */
+    button {
+      font-size: 18px;              /* フォントサイズ / Font size */
+      padding: 10px 20px;           /* パディング / Padding inside the button */
+      margin: 10px;                 /* 外側の余白 / Margin around the button */
+      background-color: #000000;  /* 背景色 / Background color */
+      color: #ffffff;             /* 文字色 / Text color */
+      border: none;                 /* 枠線なし / No border */
+      border-radius: 5px;           /* 丸み / Rounded corners */
+      cursor: pointer;              /* カーソル変更 / Pointer cursor */
+    }
+
+    button:hover {
+      background-color: #303030; /* ホバー時の色 / Hover color */
+    }
   </style>
 </head>
 <body>
   <div id="cy"></div>
+
+  <!-- リセットボタン：初期レイアウトに戻す / Reset to initial layout -->
+  <button onclick="resetLayout()">Reset Layout</button>
+
+  <!-- メインスクリプトの読み込み / Load main logic -->
   <script src="js/main.js"></script>
 </body>
 </html>

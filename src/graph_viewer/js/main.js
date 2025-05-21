@@ -5,6 +5,13 @@ fetch('json/sample.json')
 // Parse response as JSON
   .then(response => response.json())
   .then(data => {
+    // 元のデータをディープコピーでグローバル変数として保持
+    // Deep copy original data to store globally for resetting
+    window.originalElements = JSON.parse(JSON.stringify({
+      nodes: data.nodes,
+      edges: data.edges
+    }));
+
     // Cytoscape.js の初期化
     // Initialize Cytoscape.js
     window.cy = cytoscape({
@@ -55,3 +62,39 @@ fetch('json/sample.json')
       ]
     });
   });
+
+// リセットボタン用関数：位置・ズーム・パンをすべて元に戻す
+// Reset to original preset layout, zoom, and pan
+function resetLayout() {
+  if (window.cy && window.originalElements) {
+    // 既存の要素を削除
+    window.cy.elements().remove();
+
+    // ディープコピーで初期データを再複製
+    const resetElements = JSON.parse(JSON.stringify(window.originalElements));
+
+    // ノードの位置を強制的にセット
+    resetElements.nodes.forEach(node => {
+      window.cy.add({
+        group: 'nodes',
+        data: node.data,
+        position: node.position
+      });
+    });
+
+    // エッジを再追加
+    resetElements.edges.forEach(edge => {
+      window.cy.add({
+        group: 'edges',
+        data: edge.data
+      });
+    });
+
+    // preset レイアウト（この時点で位置は指定済なので不要でもOK）
+    const layout = window.cy.layout({ name: 'preset' });
+    layout.run();
+
+    // パンを初期に戻す
+    window.cy.center();
+  }
+}
