@@ -5,12 +5,6 @@ fetch('json/sample.json')
 // Parse response as JSON
   .then(response => response.json())
   .then(data => {
-    // 各ノードに label を追加（ここでは ID を使う）
-    // Add label field to each node (using ID as label)
-    data.nodes.forEach(node => {
-      node.data.label = node.data.id;
-    });
-
     // Cytoscape.js の初期化
     // Initialize Cytoscape.js
     window.cy = cytoscape({
@@ -20,7 +14,16 @@ fetch('json/sample.json')
 
       // JSON から読み込んだ頂点と辺情報をセット
       // Set nodes and edges from loaded JSON
-      elements: data,
+      elements: {
+        nodes: data.nodes,
+        edges: data.edges
+      },
+
+      // ノードの位置を JSON の position に従って固定
+      // Fix node positions based on JSON position
+      layout: {
+        name: 'preset'
+      },
 
       minZoom: 0.5, // ズームアウトの下限 / Minimum zoom level
       maxZoom: 2,   // ズームインの上限 / Maximum zoom level
