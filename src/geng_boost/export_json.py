@@ -21,7 +21,7 @@ json_dir = os.path.join("json", input_dir, f"n{n}")
 os.makedirs(json_dir, exist_ok=True)
 
 # グラフを格納するリスト
-#  List to store parsed graphs
+# List to store parsed graphs
 graphs = []
 
 # 入力ファイルを読み込む
@@ -48,13 +48,39 @@ else:
     print("Error: No valid input file or chunk directory found.")
     exit(1)
 
-# 各グラフを JSON 形式にエクスポート
-# Export each graph as JSON
+# 各グラフを JSON 形式にエクスポート（座標 + 次数ラベル付き）
+# Export each graph as JSON (with position and degree label)
 for i, G in enumerate(graphs):
+    try:
+        pos = nx.planar_layout(G)  # 平面レイアウトの取得 / Get planar layout
+    except:
+        pos = nx.spring_layout(G, seed=42)  # 失敗時は spring_layout / Fallback layout
+
+    degrees = dict(G.degree())
+
     data = {
-        "nodes": [{"data": {"id": str(v)}} for v in G.nodes()],
-        "edges": [{"data": {"source": str(u), "target": str(v)}} for u, v in G.edges()]
+        "nodes": [
+            {
+                "data": {
+                    "id": str(v),
+                    "label": str(degrees[v])  # label に次数を格納 / Store degree as label
+                },
+                "position": {
+                    "x": float(pos[v][0] * 200),  # 倍率をかけて広げる / Scale coordinates
+                    "y": float(pos[v][1] * 200)
+                }
+            } for v in G.nodes()
+        ],
+        "edges": [
+            {
+                "data": {
+                    "source": str(u),
+                    "target": str(v)
+                }
+            } for u, v in G.edges()
+        ]
     }
+
     outpath = os.path.join(json_dir, f"{i+1}.json")
     with open(outpath, "w") as f:
         json.dump(data, f, indent=2)
