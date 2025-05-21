@@ -51,15 +51,29 @@ fetch('json/sample.json')
           }
         },
         {
-          // 辺のスタイル指定
-          // Edge styling
+          // 通常の辺のスタイル / Default edge styling
           selector: 'edge',
           style: {
-            'width': 1,               // 線の太さ / Line thickness
-            'line-color': '#000'      // 線の色（黒）/ Line color (black)
+            'width': 1,
+            'line-color': '#000'         // 線の色（黒）/ Line color (black)
+          }
+        },
+        {
+          // 強調表示された辺のスタイル / Highlighted edge styling
+          selector: 'edge[highlighted = "true"]',
+          style: {
+            'line-color': '#f00'         // 線の色（赤）/ Line color (red)
           }
         }
       ]
+    });
+
+    // 辺クリック時に色をトグルするイベント追加
+    // Add click event to toggle edge color
+    window.cy.on('tap', 'edge', function (evt) {
+      const edge = evt.target;
+      const isHighlighted = edge.data('highlighted') === 'true';
+      edge.data('highlighted', isHighlighted ? 'false' : 'true');
     });
   });
 
@@ -68,12 +82,15 @@ fetch('json/sample.json')
 function resetLayout() {
   if (window.cy && window.originalElements) {
     // 既存の要素を削除
+    // Remove current elements
     window.cy.elements().remove();
 
     // ディープコピーで初期データを再複製
+    // Deep copy original elements
     const resetElements = JSON.parse(JSON.stringify(window.originalElements));
 
     // ノードの位置を強制的にセット
+    // Re-add nodes with positions
     resetElements.nodes.forEach(node => {
       window.cy.add({
         group: 'nodes',
@@ -82,19 +99,25 @@ function resetLayout() {
       });
     });
 
-    // エッジを再追加
+    // エッジを再追加（highlighted 状態を false に初期化）
+    // Re-add edges with no highlight
     resetElements.edges.forEach(edge => {
       window.cy.add({
         group: 'edges',
-        data: edge.data
+        data: {
+          ...edge.data,
+          highlighted: 'false' // リセット時に必ず false に / Always reset to false
+        }
       });
     });
 
-    // preset レイアウト（この時点で位置は指定済なので不要でもOK）
+    // preset レイアウト（位置は既に含まれているが、念のため実行）
+    // Run preset layout (though positions are already set)
     const layout = window.cy.layout({ name: 'preset' });
     layout.run();
 
-    // パンを初期に戻す
+    // グラフの中央にパンする
+    // Center the graph view
     window.cy.center();
   }
 }
