@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "data": {
+        "id": "0",
+        "label": "3"
+      },
+      "position": {
+        "x": -200.0,
+        "y": -80.0
+      }
+    },
+    {
+      "data": {
+        "id": "1",
+        "label": "3"
+      },
+      "position": {
+        "x": 88.0,
+        "y": -48.0
+      }
+    },
+    {
+      "data": {
+        "id": "2",
+        "label": "3"
+      },
+      "position": {
+        "x": -8.0,
+        "y": 112.00000000000001
+      }
+    },
+    {
+      "data": {
+        "id": "3",
+        "label": "3"
+      },
+      "position": {
+        "x": -8.0,
+        "y": 16.0
+      }
+    },
+    {
+      "data": {
+        "id": "4",
+        "label": "4"
+      },
+      "position": {
+        "x": 184.0,
+        "y": -80.0
+      }
+    },
+    {
+      "data": {
+        "id": "5",
+        "label": "3"
+      },
+      "position": {
+        "x": -8.0,
+        "y": -16.0
+      }
+    },
+    {
+      "data": {
+        "id": "6",
+        "label": "3"
+      },
+      "position": {
+        "x": -72.0,
+        "y": 48.0
+      }
+    },
+    {
+      "data": {
+        "id": "7",
+        "label": "4"
+      },
+      "position": {
+        "x": 24.0,
+        "y": 48.0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "data": {
+        "source": "0",
+        "target": "4"
+      }
+    },
+    {
+      "data": {
+        "source": "0",
+        "target": "5"
+      }
+    },
+    {
+      "data": {
+        "source": "0",
+        "target": "6"
+      }
+    },
+    {
+      "data": {
+        "source": "1",
+        "target": "4"
+      }
+    },
+    {
+      "data": {
+        "source": "1",
+        "target": "5"
+      }
+    },
+    {
+      "data": {
+        "source": "1",
+        "target": "7"
+      }
+    },
+    {
+      "data": {
+        "source": "2",
+        "target": "4"
+      }
+    },
+    {
+      "data": {
+        "source": "2",
+        "target": "6"
+      }
+    },
+    {
+      "data": {
+        "source": "2",
+        "target": "7"
+      }
+    },
+    {
+      "data": {
+        "source": "3",
+        "target": "5"
+      }
+    },
+    {
+      "data": {
+        "source": "3",
+        "target": "6"
+      }
+    },
+    {
+      "data": {
+        "source": "3",
+        "target": "7"
+      }
+    },
+    {
+      "data": {
+        "source": "4",
+        "target": "7"
+      }
+    }
+  ]
+}

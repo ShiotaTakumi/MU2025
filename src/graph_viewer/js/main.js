@@ -7,7 +7,9 @@ const dataMap = {
     n4: Array.from({ length: 1 }, (_, i) => `${i + 1}.json`),
     n5: Array.from({ length: 2 }, (_, i) => `${i + 1}.json`),
     n6: Array.from({ length: 7 }, (_, i) => `${i + 1}.json`),
-    n7: Array.from({ length: 34 }, (_, i) => `${i + 1}.json`)
+    n7: Array.from({ length: 34 }, (_, i) => `${i + 1}.json`),
+    n8: Array.from({ length: 257 }, (_, i) => `${i + 1}.json`),
+    n9: Array.from({ length: 2606 }, (_, i) => `${i + 1}.json`)
   },
   pyramid: {
     n4: ['1.json'],
