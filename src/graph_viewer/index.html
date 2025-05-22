@@ -23,6 +23,7 @@
       border: none;                 /* 枠線なし / No border */
       border-radius: 5px;           /* 丸み / Rounded corners */
       cursor: pointer;              /* カーソル変更 / Pointer cursor */
+      transition: background-color 0.2s ease;
     }
 
     button:hover {
@@ -31,16 +32,39 @@
 
     /* セレクトボックスのスタイル / Select box style */
     select {
-      font-size: 16px;              /* フォントサイズ / Font size */
-      padding: 5px 10px;            /* パディング / Padding inside select */
-      margin: 10px;                 /* 外側の余白 / Margin around select */
+      font-size: 16px;                /* フォントサイズ / Font size */
+      padding: 12px 30px 12px 12px;   /* パディング: 左12px 右40px / Padding: top/right/bottom/left */
+      margin: 10px;                   /* 外側の余白 / Margin around select */
+      background-color: #000000;    /* 背景色 / Background color */
+      color: #ffffff;               /* 文字色 / Text color */
+      border: none;                   /* 枠線なし / No border */
+      border-radius: 5px;             /* 丸み / Rounded corners */
+      cursor: pointer;                /* カーソル変更 / Pointer cursor */
+      appearance: none;               /* デフォルト矢印非表示 / Remove default arrow */
+      /* カスタム矢印 / Custom arrow */
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath fill='%23fff' d='M0 0l5 7 5-7z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      /* 矢印位置を右12px内側に調整 / Arrow position adjusted */
+      background-position: right 12px center;
+    }
+
+    select:hover {
+      background-color: #303030;    /* ホバー時の色 / Hover color */
+    }
+
+    /* 操作用コントロールの配置調整 / Controls container style */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
     }
   </style>
 </head>
 <body>
 
   <!-- 操作用コントロール / Controls for interaction -->
-  <div>
+  <div class="controls">
     <!-- 型選択用セレクトボックス / Select for type (polyhedral/pyramid) -->
     <select id="typeSelect"></select>
     <!-- 頂点数選択用セレクトボックス / Select for vertex count -->
