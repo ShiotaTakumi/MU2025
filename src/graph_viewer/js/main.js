@@ -32,6 +32,12 @@ const dataMap = {
     n9: ['1.json'],
     n10: ['1.json'],
     n11: ['1.json']
+  },
+  prism: {
+    n6: ['1.json'],
+    n8: ['1.json'],
+    n10: ['1.json'],
+    n12: ['1.json']
   }
 };
 
