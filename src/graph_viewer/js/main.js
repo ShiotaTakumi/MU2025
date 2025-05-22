@@ -3,6 +3,9 @@
 // JSON ディレクトリ構造に合わせて、選択肢を定義
 // Define the selection options based on the JSON directory structure
 const dataMap = {
+  sample: {
+    n4: ['1.json']
+  },
   polyhedron: {
     n4: Array.from({ length: 1 }, (_, i) => `${i + 1}.json`),
     n5: Array.from({ length: 2 }, (_, i) => `${i + 1}.json`),
