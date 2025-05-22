@@ -18,6 +18,15 @@ const dataMap = {
     n9: ['1.json'],
     n10: ['1.json'],
     n11: ['1.json']
+  },
+  bipyramid: {
+    n5: ['1.json'],
+    n6: ['1.json'],
+    n7: ['1.json'],
+    n8: ['1.json'],
+    n9: ['1.json'],
+    n10: ['1.json'],
+    n11: ['1.json']
   }
 };
 
