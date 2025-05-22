@@ -1,0 +1,2 @@
+All degree patterns and their frequencies:
+[3,4] : 1
