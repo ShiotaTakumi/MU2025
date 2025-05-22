@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Graph Viewer</title>
+  <!-- Cytoscape.js のライブラリを読み込み / Load Cytoscape.js library -->
   <script src="https://unpkg.com/cytoscape@3.23.0/dist/cytoscape.min.js"></script>
   <style>
     /* グラフ描画領域のスタイル / Graph container style */
@@ -15,8 +16,8 @@
     /* ボタンのスタイル / Button style */
     button {
       font-size: 18px;              /* フォントサイズ / Font size */
-      padding: 10px 20px;           /* パディング / Padding inside the button */
-      margin: 10px;                 /* 外側の余白 / Margin around the button */
+      padding: 10px 20px;           /* パディング / Padding inside button */
+      margin: 10px;                 /* 外側の余白 / Margin around button */
       background-color: #000000;  /* 背景色 / Background color */
       color: #ffffff;             /* 文字色 / Text color */
       border: none;                 /* 枠線なし / No border */
@@ -25,17 +26,37 @@
     }
 
     button:hover {
-      background-color: #303030; /* ホバー時の色 / Hover color */
+      background-color: #303030;    /* ホバー時の色 / Hover color */
+    }
+
+    /* セレクトボックスのスタイル / Select box style */
+    select {
+      font-size: 16px;              /* フォントサイズ / Font size */
+      padding: 5px 10px;            /* パディング / Padding inside select */
+      margin: 10px;                 /* 外側の余白 / Margin around select */
     }
   </style>
 </head>
 <body>
+
+  <!-- 操作用コントロール / Controls for interaction -->
+  <div>
+    <!-- 型選択用セレクトボックス / Select for type (polyhedral/pyramid) -->
+    <select id="typeSelect"></select>
+    <!-- 頂点数選択用セレクトボックス / Select for vertex count -->
+    <select id="nSelect"></select>
+    <!-- ファイル選択用セレクトボックス / Select for JSON file -->
+    <select id="fileSelect"></select>
+    <!-- 描画・リセットボタン / Draw or reset the graph -->
+    <button id="drawBtn">Draw / Reset</button>
+    <!-- グラフを中央に配置 / Center the graph view -->
+    <button onclick="centering()">Centering</button>
+  </div>
+
+  <!-- Cytoscape コンテナ / Cytoscape container -->
   <div id="cy"></div>
 
-  <!-- リセットボタン：初期レイアウトに戻す / Reset to initial layout -->
-  <button onclick="resetLayout()">Reset Layout</button>
-
-  <!-- メインスクリプトの読み込み / Load main logic -->
+  <!-- メインスクリプトの読み込み / Load main script -->
   <script src="js/main.js"></script>
 </body>
 </html>
