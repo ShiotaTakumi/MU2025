@@ -2,6 +2,7 @@
 
 from collections import Counter  # 次数分布の頻度集計に使用 / For counting frequency of degrees
 import os  # ファイル操作・存在確認に使用 / For file handling and path checking
+import re  # 正規表現を使った文字列抽出に使用 / For extracting data using regular expressions
 
 # Shift 距離関数の定義
 # 1つずれた次数をコスト1として扱い、近接した構造の類似性を評価
@@ -46,13 +47,13 @@ def shift_distance(c1, c2):
 
     return distance
 
-# 次数分布文字列を Counter に変換
-# Convert degree pattern string to Counter
+# 次数分布文字列（例: "[3,4] [4,1]"）を Counter に変換
+# Convert degree pattern string (e.g., "[3,4] [4,1]") to Counter
 def parse_degree_pattern(line):
-    # 入力文字列をスペースで分割し、[次数, 個数] に変換
-    # Parse and map [degree,count]
-    parts = line.strip().split(" ")
-    return Counter({int(p[1]): int(p[3]) for p in parts})
+    # 正規表現で [次数, 個数] のペアを抽出
+    # Extract [degree, count] pairs using regex
+    matches = re.findall(r"\[(\d+),\s*(\d+)\]", line)
+    return Counter({int(deg): int(cnt) for deg, cnt in matches})
 
 # 頂点数の範囲をユーザーから取得
 # Prompt user for start and end n values
@@ -81,7 +82,7 @@ for n in range(n_start, n_end + 1):
 
     # ファイルパスの構築
     # Construct file path
-    path = f"degree_unique/n{n}.txt"
+    path = f"degree_list/n{n}.txt"
 
     # ファイル存在チェック
     # Check if file exists
