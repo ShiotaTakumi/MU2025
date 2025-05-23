@@ -40,10 +40,10 @@ def extract_diff(p1, p2):
     return diffs
 
 # extract_diff で得た情報を使って予測パターンを生成
-# Generate expected p3 from p2 and diff info
-def predict_next(p2, diffs):
+# Generate expected next pattern from p using diff info
+def predict_next(p, diffs):
     predicted = []
-    for a in p2:
+    for a in p:
         modified = False
         for t, val, d in diffs:
             if t == "count" and a[0] == val:
@@ -56,36 +56,56 @@ def predict_next(p2, diffs):
             predicted.append(a[:])
     return predicted
 
-# 完全一致判定（順番も一致） / Exact match including order
+# 完全一致判定（順番も一致）
+# Exact match including order
 def is_exact_match(p1, p2):
     return all(a == b for a, b in zip(p1, p2))
 
-# ユーザーから頂点数 n を入力
-# Prompt user to input number of vertices n
-n = int(input("Enter number of vertices n: ").strip())
+# ユーザーから範囲を取得
+# Prompt user for n range
+n_start = int(input("Enter start value of n: ").strip())
+n_end = int(input("Enter end value of n: ").strip())
 
-# n, n+1, n+2 に対応するパターンを読み込む / Load patterns for n, n+1, n+2
-patterns_n = load_patterns(n)
-patterns_np1 = load_patterns(n + 1)
-patterns_np2 = load_patterns(n + 2)
+# 範囲が不正な場合は終了
+# Exit if range is invalid
+if n_end <= n_start:
+    print("Error: Invalid range. Start must be less than end.")
+    exit(1)
 
-print(f"\n--- Searching for 3-step growth chains: n={n} → n={n+1} → n={n+2} ---\n")
+# 各 n に対してパターンを読み込む
+# Load all pattern lists in range
+all_patterns = {}
+for n in range(n_start, n_end + 1):
+    all_patterns[n] = load_patterns(n)
 
-# n → n+1 のペアを列挙して、系列候補を構築 / Compare n vs n+1
-for p1 in patterns_n:
-    for p2 in patterns_np1:
+print(f"\n--- Searching for full chains from n={n_start} to n={n_end} ---\n")
+
+# n_start のパターンを起点にして、完全な連鎖を探す
+# Try all patterns at n_start and extend fully to n_end
+for p1 in all_patterns[n_start]:
+    for p2 in all_patterns[n_start + 1]:
         if len(p1) != len(p2):
             continue
         diffs = extract_diff(p1, p2)
         if not diffs:
             continue
-        predicted_p3 = predict_next(p2, diffs)
-        for p3 in patterns_np2:
-            if len(p3) != len(predicted_p3):
-                continue
-            if is_exact_match(predicted_p3, p3):
-                print("✔ Found 3-step chain:")
-                print(f"n{n}:{format_pattern(p1)}")
-                print(f"n{n+1}:{format_pattern(p2)}")
-                print(f"n{n+2}:{format_pattern(p3)}")
-                print("---")
+        chain = [(n_start, p1), (n_start + 1, p2)]
+        current = p2
+        success = True
+        for next_n in range(n_start + 2, n_end + 1):
+            predicted = predict_next(current, diffs)
+            match_found = False
+            for candidate in all_patterns[next_n]:
+                if len(candidate) == len(predicted) and is_exact_match(candidate, predicted):
+                    chain.append((next_n, candidate))
+                    current = candidate
+                    match_found = True
+                    break
+            if not match_found:
+                success = False
+                break
+        if success:
+            print(f"✔ Chains:")
+            for step_n, pat in chain:
+                print(f"n{step_n}: {format_pattern(pat)}")
+            print("---")
