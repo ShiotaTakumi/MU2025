@@ -34,11 +34,17 @@ def compare_and_print(p1, p2):
         if a == b:
             continue
         if a[0] == b[0] and a[1] != b[1]:
-            total_diff += abs(b[1] - a[1])
+            diff = b[1] - a[1]
+            if diff < 0:
+                return  # 減少があれば除外 / Skip if count decreased
+            total_diff += diff
         elif a[1] == b[1] and a[0] != b[0]:
-            total_diff += abs(b[0] - a[0])
+            diff = b[0] - a[0]
+            if diff < 0:
+                return  # 減少があれば除外 / Skip if degree decreased
+            total_diff += diff
         else:
-            return  # 比較対象がなければ出力しない / Skip if no valid comparisons
+            return  # 完全不一致があるなら除外 / Skip if neither matches
 
     # 差分の合計が1または2のみ表示 / Show only if total difference is 1 or 2
     if total_diff == 1:
