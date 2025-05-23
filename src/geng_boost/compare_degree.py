@@ -19,28 +19,38 @@ def load_patterns(n):
     with open(path, "r") as f:
         return [parse_line(line.strip()) for line in f if line.strip()]
 
+# パターンリストを "[a,b] [c,d]" の形式に整形する関数
+# Format pattern list as "[a,b] [c,d]" string for display
+def format_pattern(pattern):
+    return " ".join([f"[{a},{b}]" for a, b in pattern])
+
 # 2つの次数分布を比較して、degree または count のみ一致する要素ペアとその差分を表示する
 # Compare two degree patterns and print element pairs with matching degree or count, and show their difference
 def compare_and_print(p1, p2):
     # 有効な比較が1つもなければ出力しない
     # Skip if there are no meaningful comparisons
-    differences = []  # 有効な比較を一時保存 / Temporarily store valid comparisons
+    total_diff = 0  # 差分の合計を追跡 / Track total difference
     for a, b in zip(p1, p2):
         if a == b:
             continue
         if a[0] == b[0] and a[1] != b[1]:
-            diff = abs(b[1] - a[1])
-            differences.append(f"{a} <-> {b}  # diff = {diff}")
+            total_diff += abs(b[1] - a[1])
         elif a[1] == b[1] and a[0] != b[0]:
-            diff = abs(b[0] - a[0])
-            differences.append(f"{a} <-> {b}  # diff = {diff}")
+            total_diff += abs(b[0] - a[0])
         else:
             return  # 比較対象がなければ出力しない / Skip if no valid comparisons
 
-    print(f"Compare: {p1} vs {p2}")
-    for line in differences:
-        print(line)
-    print("---")
+    # 差分の合計が1または2のみ表示 / Show only if total difference is 1 or 2
+    if total_diff == 1:
+        print("--- diff = 1 ---")  # 差分1の表示ラベル / Label for total difference 1
+        print(f"n{n}: {format_pattern(p1)}")
+        print(f"n{n+1}: {format_pattern(p2)}")
+        print("---")
+    elif total_diff == 2:
+        print("--- diff = 2 ---")  # 差分2の表示ラベル / Label for total difference 2
+        print(f"n{n}: {format_pattern(p1)}")
+        print(f"n{n+1}: {format_pattern(p2)}")
+        print("---")
 
 # ユーザーから頂点数 n を入力
 # Prompt user to input number of vertices n
