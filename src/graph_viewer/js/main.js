@@ -38,6 +38,12 @@ const dataMap = {
     n8: ['1.json'],
     n10: ['1.json'],
     n12: ['1.json']
+  },
+  antiprism: {
+    n6: ['1.json'],
+    n8: ['1.json'],
+    n10: ['1.json'],
+    n12: ['1.json']
   }
 };
 
