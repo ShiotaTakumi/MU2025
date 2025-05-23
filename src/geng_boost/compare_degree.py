@@ -1,166 +1,47 @@
 #!/usr/bin/env python3
 
-from collections import Counter  # 次数分布の頻度集計に使用 / For counting frequency of degrees
-import os  # ファイル操作・存在確認に使用 / For file handling and path checking
-import re  # 正規表現を使った文字列抽出に使用 / For extracting data using regular expressions
+import re  # 正規表現を使った文字列抽出に使用 / For extracting structured patterns using regular expressions
+import os  # ファイル操作と存在確認に使用 / For file access and path checking
 
-# Shift 距離関数の定義
-# 1つずれた次数をコスト1として扱い、近接した構造の類似性を評価
-# Define the shift distance function
-# Treat degree +/-1 shifts as cost-1 and evaluate similarity
-def shift_distance(c1, c2):
-    c1 = c1.copy()  # 入力を破壊しないようコピー / Copy input to avoid modifying original
-    c2 = c2.copy()
-    distance = 0  # 距離の初期値 / Initialize distance
-
-    # 完全一致部分を削除
-    # Cancel out exact matches
-    for k in list(c1.keys()):
-        common = min(c1[k], c2.get(k, 0))
-        c1[k] -= common
-        c2[k] -= common
-        if c1[k] == 0:
-            del c1[k]
-        if c2.get(k, 0) == 0:
-            c2.pop(k, None)
-
-    # ±1 の次数シフトを処理
-    # Handle off-by-one shifts
-    for k in list(c1.keys()):
-        for dk in [-1, 1]:  # 隣接次数を調査 / Check neighbors
-            neighbor = k + dk
-            if neighbor in c2:
-                shift = min(c1[k], c2[neighbor])
-                c1[k] -= shift
-                c2[neighbor] -= shift
-                distance += shift  # コスト1として加算 / Count as cost 1
-                if c1[k] == 0:
-                    del c1[k]
-                if c2[neighbor] == 0:
-                    del c2[neighbor]
-
-    # 残りの unmatched を L1 距離として加算
-    # Add unmatched as L1 distance
-    all_keys = set(c1) | set(c2)
-    for k in all_keys:
-        distance += abs(c1.get(k, 0) - c2.get(k, 0))
-
-    return distance
-
-# 次数分布文字列（例: "[3,4] [4,1]"）を Counter に変換
-# Convert degree pattern string (e.g., "[3,4] [4,1]") to Counter
-def parse_degree_pattern(line):
-    # 正規表現で [次数, 個数] のペアを抽出
-    # Extract [degree, count] pairs using regex
+# 次数分布パターン文字列をパースする関数
+# Parse a degree pattern string (e.g., "[3,2] [4,3]") into a list of [degree, count] pairs
+def parse_line(line):
     matches = re.findall(r"\[(\d+),\s*(\d+)\]", line)
-    return Counter({int(deg): int(cnt) for deg, cnt in matches})
+    return [[int(deg), int(cnt)] for deg, cnt in matches]
 
-# 頂点数の範囲をユーザーから取得
-# Prompt user for start and end n values
-n_start = int(input("Enter the start number of vertices (e.g., 8): ").strip())
-n_end = int(input("Enter the end number of vertices (e.g., 11): ").strip())
-
-# モード（全体 / 偶数のみ / 奇数のみ）を取得
-# Ask user for filtering mode
-mode = input("Select mode: (a)ll, (e)ven only, (o)dd only: ").strip().lower()
-
-# 全ての n に対するパターンを格納する辞書
-# Dictionary to store all patterns
-all_patterns = {}
-
-# 指定範囲でファイルを読み込む
-# Load degree pattern files for each n in range
-for n in range(n_start, n_end + 1):
-    # 偶数モードで奇数ならスキップ
-    # Skip odd if even-only
-    if mode == 'e' and n % 2 != 0:
-        continue
-    # 奇数モードで偶数ならスキップ
-    # Skip even if odd-only
-    if mode == 'o' and n % 2 != 1:
-        continue
-
-    # ファイルパスの構築
-    # Construct file path
+# 指定された n に対応するパターンファイルを読み込む
+# Load all degree patterns from file degree_list/n{n}.txt
+def load_patterns(n):
     path = f"degree_list/n{n}.txt"
-
-    # ファイル存在チェック
-    # Check if file exists
     if not os.path.exists(path):
-        continue
-
-    # ファイルを開いて内容を読み込む
-    # Read patterns from file
+        print(f"File not found: {path}")
+        return []
     with open(path, "r") as f:
-        patterns = [line.strip() for line in f if line.strip()]
-    # 各パターンを Counter に変換して保存
-    # Store as (line, Counter)
-    all_patterns[n] = [(line, parse_degree_pattern(line)) for line in patterns]
+        return [parse_line(line.strip()) for line in f if line.strip()]
 
-# 使用する頂点数の一覧を昇順に取得
-# Get sorted list of valid n values
-ns = sorted(all_patterns.keys())
+# 2つの次数分布を比較して、全要素間の組を表示する
+# Compare two degree patterns and print all pairwise combinations
+def compare_and_print(p1, p2):
+    print(f"Compare: {p1} vs {p2}")
+    for a in p1:
+        for b in p2:
+            print(f"{a} <-> {b}")
+    print("---")
 
-# 距離1の連鎖を出力
-# Print chains with shift distance = 1
-print("\nValid chains with shift distance = 1 between each step:\n")
-for line0, c0 in all_patterns.get(ns[0], []):
-    chain = [(ns[0], line0)]  # 初期パターンを登録 / Initialize chain
-    current_pattern = c0
-    valid = True  # チェイン有効フラグ / Validity flag
+# ユーザーから頂点数 n を入力
+# Prompt user to input number of vertices n
+n = int(input("Enter number of vertices n: ").strip())
 
-    # 次の n 値へ連続してたどる
-    # Traverse subsequent n values
-    for i in range(1, len(ns)):
-        n = ns[i]
-        found = False
-        for line_next, c_next in all_patterns[n]:
-            # 同じ種類数かつ距離1ならチェインに追加
-            # Same length and shift=1
-            if len(current_pattern) == len(c_next) and shift_distance(current_pattern, c_next) == 1:
-                chain.append((n, line_next))
-                current_pattern = c_next
-                found = True
-                break
-        if not found:
-            valid = False  # 中断されたら終了 / Chain broken
-            break
+# n と n+1 に対応するパターンを読み込む / Load patterns for n and n+1
+patterns_n = load_patterns(n)
+patterns_np1 = load_patterns(n + 1)
 
-    # 成功したチェインを表示
-    # Print valid chain
-    if valid:
-        for step_n, pat in chain:
-            print(f"n={step_n}: {pat}")
-        print("---")
+print(f"\n--- Comparing n={n} vs n={n+1} (Cartesian product) ---\n")
 
-# 距離2の連鎖を出力
-# Print chains with shift distance = 2
-print("\nValid chains with shift distance = 2 between each step:\n")
-for line0, c0 in all_patterns.get(ns[0], []):
-    chain = [(ns[0], line0)]
-    current_pattern = c0
-    valid = True
-
-    # 次の n 値へ連続してたどる
-    # Traverse subsequent n values
-    for i in range(1, len(ns)):
-        n = ns[i]
-        found = False
-        for line_next, c_next in all_patterns[n]:
-            # 同じ種類数かつ距離2ならチェインに追加
-            # Same length and shift=2
-            if len(current_pattern) == len(c_next) and shift_distance(current_pattern, c_next) == 2:
-                chain.append((n, line_next))
-                current_pattern = c_next
-                found = True
-                break
-        if not found:
-            valid = False  # 中断されたら終了 / Chain broken
-            break
-
-    # 成功したチェインを表示
-    # Print valid chain
-    if valid:
-        for step_n, pat in chain:
-            print(f"n={step_n}: {pat}")
-        print("---")
+# 要素数が一致するパターン間だけを比較する
+# Compare only patterns with the same number of elements
+for p1 in patterns_n:
+    for p2 in patterns_np1:
+        if len(p1) != len(p2):
+            continue
+        compare_and_print(p1, p2)
