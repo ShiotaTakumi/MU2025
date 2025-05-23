@@ -22,20 +22,24 @@ def load_patterns(n):
 # 2つの次数分布を比較して、degree または count のみ一致する要素ペアとその差分を表示する
 # Compare two degree patterns and print element pairs with matching degree or count, and show their difference
 def compare_and_print(p1, p2):
+    # 有効な比較が1つもなければ出力しない
+    # Skip if there are no meaningful comparisons
+    differences = []  # 有効な比較を一時保存 / Temporarily store valid comparisons
+    for a, b in zip(p1, p2):
+        if a == b:
+            continue
+        if a[0] == b[0] and a[1] != b[1]:
+            diff = abs(b[1] - a[1])
+            differences.append(f"{a} <-> {b}  # diff = {diff}")
+        elif a[1] == b[1] and a[0] != b[0]:
+            diff = abs(b[0] - a[0])
+            differences.append(f"{a} <-> {b}  # diff = {diff}")
+        else:
+            return  # 比較対象がなければ出力しない / Skip if no valid comparisons
+
     print(f"Compare: {p1} vs {p2}")
-    for a in p1:
-        for b in p2:
-            # 完全一致はスキップ / Skip if fully identical
-            if a == b:
-                continue
-            # degree（次数）のみ一致 / Match only on degree
-            if a[0] == b[0] and a[1] != b[1]:
-                diff = abs(b[1] - a[1])
-                print(f"{a} <-> {b}  # diff = {diff}")
-            # count（出現数）のみ一致 / Match only on count
-            elif a[1] == b[1] and a[0] != b[0]:
-                diff = abs(b[0] - a[0])
-                print(f"{a} <-> {b}  # diff = {diff}")
+    for line in differences:
+        print(line)
     print("---")
 
 # ユーザーから頂点数 n を入力
