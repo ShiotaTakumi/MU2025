@@ -24,54 +24,68 @@ def load_patterns(n):
 def format_pattern(pattern):
     return " ".join([f"[{a},{b}]" for a, b in pattern])
 
-# 2つの次数分布を比較して、degree または count のみ一致する要素ペアとその差分を表示する
-# Compare two degree patterns and print element pairs with matching degree or count, and show their difference
-def compare_and_print(p1, p2):
-    # 有効な比較が1つもなければ出力しない
-    # Skip if there are no meaningful comparisons
-    total_diff = 0  # 差分の合計を追跡 / Track total difference
+# n → n+1 の比較結果から、継続すべき系列情報を返す
+# Compare p1 and p2 to identify change direction and diff (degree or count)
+def extract_diff(p1, p2):
+    diffs = []
     for a, b in zip(p1, p2):
         if a == b:
             continue
-        if a[0] == b[0] and a[1] != b[1]:
-            diff = b[1] - a[1]
-            if diff < 0:
-                return  # 減少があれば除外 / Skip if count decreased
-            total_diff += diff
-        elif a[1] == b[1] and a[0] != b[0]:
-            diff = b[0] - a[0]
-            if diff < 0:
-                return  # 減少があれば除外 / Skip if degree decreased
-            total_diff += diff
+        if a[0] == b[0] and b[1] > a[1]:
+            diffs.append(("count", a[0], b[1] - a[1]))  # count増加 / count increased
+        elif a[1] == b[1] and b[0] > a[0]:
+            diffs.append(("degree", a[1], b[0] - a[0]))  # degree増加 / degree increased
         else:
-            return  # 完全不一致があるなら除外 / Skip if neither matches
+            return None  # 変化が複雑すぎるので不採用 / Skip if mixed or invalid
+    return diffs
 
-    # 差分の合計が1または2のみ表示 / Show only if total difference is 1 or 2
-    if total_diff == 1:
-        print("--- diff = 1 ---")  # 差分1の表示ラベル / Label for total difference 1
-        print(f"n{n}: {format_pattern(p1)}")
-        print(f"n{n+1}: {format_pattern(p2)}")
-        print("---")
-    elif total_diff == 2:
-        print("--- diff = 2 ---")  # 差分2の表示ラベル / Label for total difference 2
-        print(f"n{n}: {format_pattern(p1)}")
-        print(f"n{n+1}: {format_pattern(p2)}")
-        print("---")
+# extract_diff で得た情報を使って予測パターンを生成
+# Generate expected p3 from p2 and diff info
+def predict_next(p2, diffs):
+    predicted = []
+    for a in p2:
+        modified = False
+        for t, val, d in diffs:
+            if t == "count" and a[0] == val:
+                predicted.append([a[0], a[1] + d])
+                modified = True
+            elif t == "degree" and a[1] == val:
+                predicted.append([a[0] + d, a[1]])
+                modified = True
+        if not modified:
+            predicted.append(a[:])
+    return predicted
+
+# 完全一致判定（順番も一致） / Exact match including order
+def is_exact_match(p1, p2):
+    return all(a == b for a, b in zip(p1, p2))
 
 # ユーザーから頂点数 n を入力
 # Prompt user to input number of vertices n
 n = int(input("Enter number of vertices n: ").strip())
 
-# n と n+1 に対応するパターンを読み込む / Load patterns for n and n+1
+# n, n+1, n+2 に対応するパターンを読み込む / Load patterns for n, n+1, n+2
 patterns_n = load_patterns(n)
 patterns_np1 = load_patterns(n + 1)
+patterns_np2 = load_patterns(n + 2)
 
-print(f"\n--- Comparing n={n} vs n={n+1} (Cartesian product) ---\n")
+print(f"\n--- Searching for 3-step growth chains: n={n} → n={n+1} → n={n+2} ---\n")
 
-# 要素数が一致するパターン間だけを比較する
-# Compare only patterns with the same number of elements
+# n → n+1 のペアを列挙して、系列候補を構築 / Compare n vs n+1
 for p1 in patterns_n:
     for p2 in patterns_np1:
         if len(p1) != len(p2):
             continue
-        compare_and_print(p1, p2)
+        diffs = extract_diff(p1, p2)
+        if not diffs:
+            continue
+        predicted_p3 = predict_next(p2, diffs)
+        for p3 in patterns_np2:
+            if len(p3) != len(predicted_p3):
+                continue
+            if is_exact_match(predicted_p3, p3):
+                print("✔ Found 3-step chain:")
+                print(f"n{n}:{format_pattern(p1)}")
+                print(f"n{n+1}:{format_pattern(p2)}")
+                print(f"n{n+2}:{format_pattern(p3)}")
+                print("---")
