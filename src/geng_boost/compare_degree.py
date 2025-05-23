@@ -39,6 +39,13 @@ def extract_diff(p1, p2):
             return None  # それ以外は無効と見なす / Skip if other cases (complex change)
     return diffs
 
+# count と degree が両方含まれているか確認する関数
+# Check whether both count and degree changes are present
+def is_count_and_degree_growth(diffs):
+    has_count = any(d[0] == "count" for d in diffs)
+    has_degree = any(d[0] == "degree" for d in diffs)
+    return has_count and has_degree
+
 # extract_diff で得た情報を使って予測パターンを生成
 # Generate expected next pattern from p using diff info
 def predict_next(p, diffs):
@@ -127,7 +134,10 @@ for p1 in all_patterns[n_values[0]]:
                 success = False  # 一致するパターンがなければ中断 / Break if no match found
                 break
         if success:
-            print(f"✔ Chains:")
+            # countとdegreeの両成長がある場合は$、そうでなければ#で表示
+            # Use $ if both count and degree grow
+            marker = "$" if is_count_and_degree_growth(diffs) else "#"
+            print(f"{marker} Chains:")
             for step_n, pat in chain:
                 print(f"n{step_n}: {format_pattern(pat)}")
             print("---")
