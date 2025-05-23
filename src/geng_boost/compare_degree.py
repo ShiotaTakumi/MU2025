@@ -19,8 +19,8 @@ def load_patterns(n):
     with open(path, "r") as f:
         return [parse_line(line.strip()) for line in f if line.strip()]
 
-# 2つの次数分布を比較して、degree または count のみ一致する要素ペアを表示する
-# Compare two degree patterns and print element pairs where only degree or only count matches
+# 2つの次数分布を比較して、degree または count のみ一致する要素ペアとその差分を表示する
+# Compare two degree patterns and print element pairs with matching degree or count, and show their difference
 def compare_and_print(p1, p2):
     print(f"Compare: {p1} vs {p2}")
     for a in p1:
@@ -30,10 +30,12 @@ def compare_and_print(p1, p2):
                 continue
             # degree（次数）のみ一致 / Match only on degree
             if a[0] == b[0] and a[1] != b[1]:
-                print(f"{a} <-> {b}")
+                diff = abs(b[1] - a[1])
+                print(f"{a} <-> {b}  # diff = {diff}")
             # count（出現数）のみ一致 / Match only on count
             elif a[1] == b[1] and a[0] != b[0]:
-                print(f"{a} <-> {b}")
+                diff = abs(b[0] - a[0])
+                print(f"{a} <-> {b}  # diff = {diff}")
     print("---")
 
 # ユーザーから頂点数 n を入力
