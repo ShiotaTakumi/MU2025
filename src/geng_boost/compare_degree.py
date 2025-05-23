@@ -61,10 +61,27 @@ def predict_next(p, diffs):
 def is_exact_match(p1, p2):
     return all(a == b for a, b in zip(p1, p2))
 
-# ユーザーから範囲を取得
-# Prompt user for n range
+# ユーザーから範囲とモードを取得
+# Prompt user for n range and mode
 n_start = int(input("Enter start value of n: ").strip())
 n_end = int(input("Enter end value of n: ").strip())
+mode = input("Select mode: (a)ll, (e)ven only, (o)dd only: ").strip().lower()
+
+# モードに基づきステップを決定
+# Determine step based on mode
+if mode == 'a':
+    step = 1
+elif mode == 'e':
+    step = 2
+    if n_start % 2 != 0:
+        n_start += 1  # 偶数に調整 / Adjust to even
+elif mode == 'o':
+    step = 2
+    if n_start % 2 != 1:
+        n_start += 1  # 奇数に調整 / Adjust to odd
+else:
+    print("Error: Invalid mode. Use a, e, or o.")
+    exit(1)
 
 # 範囲が不正な場合は終了
 # Exit if range is invalid
@@ -72,27 +89,32 @@ if n_end <= n_start:
     print("Error: Invalid range. Start must be less than end.")
     exit(1)
 
+# 対象の n 値をリストに格納
+# Generate list of n values to use
+n_values = list(range(n_start, n_end + 1, step))
+
 # 各 n に対してパターンを読み込む
 # Load all pattern lists in range
 all_patterns = {}
-for n in range(n_start, n_end + 1):
+for n in n_values:
     all_patterns[n] = load_patterns(n)
 
-print(f"\n--- Searching for full chains from n={n_start} to n={n_end} ---\n")
+print(f"\n--- Searching for full chains from n={n_values[0]} to n={n_values[-1]} (mode: {mode}) ---\n")
 
-# n_start のパターンを起点にして、完全な連鎖を探す
-# Try all patterns at n_start and extend fully to n_end
-for p1 in all_patterns[n_start]:
-    for p2 in all_patterns[n_start + 1]:
+# 最初の n を起点にしてチェインを探す
+# Start from first n in n_values
+for p1 in all_patterns[n_values[0]]:
+    for p2 in all_patterns[n_values[1]]:
         if len(p1) != len(p2):
             continue
         diffs = extract_diff(p1, p2)
         if not diffs:
             continue
-        chain = [(n_start, p1), (n_start + 1, p2)]
+        chain = [(n_values[0], p1), (n_values[1], p2)]
         current = p2
         success = True
-        for next_n in range(n_start + 2, n_end + 1):
+        for i in range(2, len(n_values)):
+            next_n = n_values[i]
             predicted = predict_next(current, diffs)
             match_found = False
             for candidate in all_patterns[next_n]:
