@@ -68,6 +68,14 @@ const dataMap = {
     n9: Array.from({ length: 3 }, (_, i) => `${i + 1}.json`),
     n10: Array.from({ length: 3 }, (_, i) => `${i + 1}.json`),
     n11: Array.from({ length: 4 }, (_, i) => `${i + 1}.json`)
+  },
+  octahedron_var_1: {
+    n6: Array.from({ length: 1 }, (_, i) => `${i + 1}.json`),
+    n7: Array.from({ length: 1 }, (_, i) => `${i + 1}.json`),
+    n8: Array.from({ length: 5 }, (_, i) => `${i + 1}.json`),
+    n9: Array.from({ length: 15 }, (_, i) => `${i + 1}.json`),
+    n10: Array.from({ length: 45 }, (_, i) => `${i + 1}.json`),
+    n11: Array.from({ length: 112 }, (_, i) => `${i + 1}.json`)
   }
 };
 
