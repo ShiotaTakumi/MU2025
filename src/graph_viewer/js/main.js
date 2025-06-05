@@ -83,6 +83,13 @@ const dataMap = {
     n9: Array.from({ length: 9 }, (_, i) => `${i + 1}.json`),
     n10: Array.from({ length: 17 }, (_, i) => `${i + 1}.json`),
     n11: Array.from({ length: 32 }, (_, i) => `${i + 1}.json`)
+  },
+  pyramid_var_4: {
+    n7: Array.from({ length: 1 }, (_, i) => `${i + 1}.json`),
+    n8: Array.from({ length: 2 }, (_, i) => `${i + 1}.json`),
+    n9: Array.from({ length: 5 }, (_, i) => `${i + 1}.json`),
+    n10: Array.from({ length: 8 }, (_, i) => `${i + 1}.json`),
+    n11: Array.from({ length: 14 }, (_, i) => `${i + 1}.json`)
   }
 };
 
