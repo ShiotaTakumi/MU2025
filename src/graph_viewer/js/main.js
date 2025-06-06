@@ -109,7 +109,12 @@ const dataMap = {
     n6: Array.from({ length: 1 }, (_, i) => `${i + 1}.json`),
     n8: Array.from({ length: 2 }, (_, i) => `${i + 1}.json`),
     n10: Array.from({ length: 3 }, (_, i) => `${i + 1}.json`)
-  }
+  },
+  unremarkable_var_1: {
+    n6: Array.from({ length: 1 }, (_, i) => `${i + 1}.json`),
+    n8: Array.from({ length: 3 }, (_, i) => `${i + 1}.json`),
+    n10: Array.from({ length: 7 }, (_, i) => `${i + 1}.json`)
+  },
 };
 
 // Cytoscape インスタンスとオリジナル要素を保存する変数
