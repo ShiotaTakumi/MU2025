@@ -5,6 +5,10 @@
   <title>Graph Viewer</title>
   <!-- Cytoscape.js のライブラリを読み込み / Load Cytoscape.js library -->
   <script src="https://unpkg.com/cytoscape@3.23.0/dist/cytoscape.min.js"></script>
+  <!-- Canvas2SVG（依存ライブラリ） / Canvas2SVG dependency -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas2svg@1.0.16/canvas2svg.js"></script>
+  <!-- Cytoscape SVG エクステンション / Cytoscape SVG extension -->
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-svg@0.4.0/cytoscape-svg.js"></script>
   <style>
     /* グラフ描画領域のスタイル / Graph container style */
     #cy {
@@ -77,6 +81,8 @@
     <button onclick="centering()">Centering</button>
     <!-- ラベル表示・非表示切り替え / Toggle node labels -->
     <button id="toggleLabelBtn">Toggle Labels</button>
+    <!-- SVGダウンロードボタン / Download SVG with 5-decimal precision -->
+    <button id="downloadSvgBtn">Download SVG</button>
   </div>
 
   <!-- Cytoscape コンテナ / Cytoscape container -->

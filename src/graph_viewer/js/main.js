@@ -1,5 +1,11 @@
 // js/main.js
 
+// Cytoscape SVG extension を登録
+// Register the Cytoscape SVG extension
+if (typeof cytoscapeSvg !== 'undefined') {
+  cytoscape.use(cytoscapeSvg);
+}
+
 // JSON ディレクトリ構造に合わせて、選択肢を定義
 // Define the selection options based on the JSON directory structure
 const dataMap = {
@@ -212,8 +218,8 @@ function loadGraph(path) {
 // Function to re-layout and center the graph
 function centering() {
   if (!cyInstance) return;
-  cyInstance.layout({ name: 'preset' }).run();  // 再配置 / Re-run layout
-  cyInstance.center();                           // 中央にパン / Center view
+  cyInstance.layout({ name: 'preset' }).run();
+  cyInstance.center();
 }
 
 // ページ読み込み後に初期化＆イベント登録
@@ -307,4 +313,39 @@ window.onload = () => {
       })
       .update();
   });
+
+  // SVGダウンロードボタンのイベント
+  // Event handler for the SVG download button
+  const downloadSvgBtn = document.getElementById('downloadSvgBtn');
+  downloadSvgBtn.addEventListener('click', () => {
+    if (!cyInstance || typeof cyInstance.svg !== 'function') {
+      alert('SVGダウンロード機能が利用できません。');
+      return;
+    }
+    // 元のSVGを取得
+    // Retrieve the original SVG
+    const svgStr = cyInstance.svg({ scale: 1, full: true });
+    // 座標を小数点以下7桁に丸め
+    // Round coordinates to seven decimal places
+    const roundedSvg = svgStr.replace(/-?\\d+\\.\\d+/g, match => parseFloat(match).toFixed(7));
+    // Blob化してダウンロード
+    // Create a Blob and trigger the download
+    const blob = new Blob([roundedSvg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${getCurrentDateTimeString()}.svg`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // 現在日時をファイル名用に生成
+  // Generate a timestamp string for the filename
+  function getCurrentDateTimeString() {
+    const d = new Date();
+    const pad = n => n.toString().padStart(2, '0');
+    return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  }
 };
