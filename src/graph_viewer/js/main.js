@@ -281,4 +281,30 @@ window.onload = () => {
   const initPath = `json/${typeSelect.value}/${nSelect.value}/${fileSelect.value}`;
   console.log('[Init] path=', initPath);
   loadGraph(initPath);
+
+  // ラベルの表示状態を保持する変数
+  // Variable to store current label visibility
+  let labelVisible = true;
+
+  // ラベル表示・非表示ボタンのイベント設定
+  // Set up event listener for the "Toggle Labels" button
+  const toggleLabelBtn = document.getElementById('toggleLabelBtn');
+  toggleLabelBtn.addEventListener('click', () => {
+    if (!cyInstance) return;
+
+    labelVisible = !labelVisible;
+
+    // スタイルを更新（labelだけ切り替え）
+    // Update node style (toggle label visibility only)
+    cyInstance.style()
+      .selector('node')
+      .style({
+        label: labelVisible ? 'data(label)' : '',
+        width: '12px',
+        height: '12px',
+        'background-color': '#000',
+        'font-size': '18px'
+      })
+      .update();
+  });
 };
